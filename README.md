@@ -1,1 +1,1 @@
-# learing-SQL
+# SQLZOO习题
