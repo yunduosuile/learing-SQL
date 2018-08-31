@@ -1,0 +1,29 @@
+MySQL
+
+1. 
+LIMIT 2 OFFSET 4 表示返回从第4行起的2行数据
+
+2.
+ORDER BY 是默认升序 如果要倒序,使用DESC
+
+3.
+_ 只能匹配一个字符, % 可以匹配多个字符
+
+4.
+ROUND 可以四舍五入, 控制位数 例如 ROUND(population/1000000,2)
+
+5.
+LEFT(name,1)表示左边第一个字符
+
+6.
+字符串里的单引号要用双引号来表示 例如 WHERE winner = 'EUGENE O''NEILL'
+
+7.
+subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1
+可以用于排序 例如 ORDER BY subject IN ('Chemistry','Physics'), subject, winner
+
+8.
+除聚集计算语句外，SELECT 语句中的每一列都必须在 GROUP BY 子句中给出
+HAVING 在 GROUP BY 分组之后进行过滤
+
+9.
