@@ -36,13 +36,12 @@ WHERE population > 250000000 OR area > 3000000
 SELECT name, population, area
 FROM world
 WHERE (population > 250000000 AND area < 3000000) OR (population < 250000000 AND area > 3000000)
-# 先暂时这么暴力
 
 9.
 SELECT name, ROUND(population/1000000,2), ROUND(gdp/1000000000,2)
 FROM world
 WHERE continent = 'South America'
-# ROUND可以四舍五入, 控制位数
+# ROUND(7512.5, 0) ROUND函数第二个参数控制位数)
 
 10.
 SELECT name, ROUND(gdp/population,-3) AS 'per-capita GDP'
