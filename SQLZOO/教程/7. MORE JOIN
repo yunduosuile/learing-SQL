@@ -53,6 +53,8 @@ FROM movie JOIN casting ON (movie.id = casting.movieid)
            JOIN actor ON (actor.id = casting.actorid)
 WHERE yr = 1962 and ord = 1
 
+----Harder Question
+
 11.
 SELECT yr, count(movie.id)
 FROM movie JOIN casting ON (movie.id = casting.movieid)
