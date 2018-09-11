@@ -33,6 +33,8 @@ SELECT player
 FROM goal JOIN game ON (goal.matchid = game.id)
 WHERE stadium =  'National Stadium, Warsaw'
 
+More difficult questions
+
 8.
 SELECT DISTINCT player 
 FROM game JOIN goal ON (game.id = goal.matchid)
@@ -70,3 +72,7 @@ FROM game LEFT JOIN goal ON (game.id = goal.matchid)
 GROUP BY mdate, team1, team2
 ORDER BY mdate, matchid, team1, team2
 # CASE WHEN子句的使用 以及左连接
+# CASE WHEN condition1 THEN value1 
+#      WHEN condition2 THEN value2  
+#      ELSE def_value 
+# END
