@@ -49,11 +49,13 @@ SELECT yr, subject, winner
 FROM nobel
 WHERE (subject = 'Medicine' AND yr < 1910) OR (subject = 'Literature' AND yr >= 2004)
 
+----Harder Questions
+
 11.
 SELECT * 
 FROM nobel
-WHERE winner LIKE 'PETER GR%'
-# 不是很明白这里的意思  不会做~
+WHERE winner = 'PETER GRÜNBERG'
+# 不是很明白这里的意思
 
 12.
 SELECT * 
@@ -73,5 +75,5 @@ SELECT winner, subject
 FROM nobel
 WHERE yr = 1984
 ORDER BY subject IN ('Chemistry','Physics'), subject, winner
-# subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1.
+# subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1. 这里把 'Chemistry','Physics' 排到了最后
 
