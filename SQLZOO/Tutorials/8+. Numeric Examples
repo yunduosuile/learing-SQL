@@ -1,0 +1,49 @@
+1.
+SELECT A_STRONGLY_AGREE
+FROM nss
+WHERE question = 'Q01' AND institution = 'Edinburgh Napier University' AND subject = '(8) Computer Science'
+
+2.
+SELECT institution, subject
+FROM nss
+WHERE score >= 100 AND question = 'Q15'
+
+3.
+SELECT institution, score
+FROM nss
+WHERE subject = '(8) Computer Science' AND question = 'Q15' AND score < 50
+
+4.
+SELECT subject, SUM(response)
+FROM nss
+WHERE question = 'Q22' AND subject IN ('(8) Computer Science','(H) Creative Arts and Design')
+GROUP BY subject
+
+5.
+SELECT subject, SUM(response * A_STRONGLY_AGREE / 100)
+FROM nss
+WHERE question = 'Q22' AND subject IN ('(8) Computer Science','(H) Creative Arts and Design')
+GROUP BY subject
+
+6.
+SELECT subject, ROUND(SUM(response * A_STRONGLY_AGREE) / SUM(response),0)
+FROM nss
+WHERE question = 'Q22' AND subject IN ('(8) Computer Science','(H) Creative Arts and Design')
+GROUP BY subject
+
+7.
+SELECT institution, ROUND(SUM(score * response)/SUM(response),0) 
+FROM nss
+WHERE institution LIKE '%Manchester%' AND question = 'Q22'
+GROUP BY institution
+
+8.
+SELECT A.institution, total_sample, comp
+FROM (SELECT x.institution AS institution, SUM(x.sample) AS total_sample
+      FROM nss x
+      WHERE x.question = 'Q01' AND x.institution LIKE '%Manchester%'
+      GROUP BY x.institution) A JOIN (SELECT y.institution AS institution, SUM(y.sample) AS comp
+                                      FROM nss y
+                                      WHERE y.question = 'Q01' AND y.institution LIKE '%Manchester%' AND y.subject = '(8) Computer Science'
+                                      GROUP BY y.institution) B ON (A.institution = B.institution)
+# 通过连接两个新表来构成 FROM 后的表
