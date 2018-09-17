@@ -13,27 +13,47 @@ SELECT player, teamid, stadium, mdate
 FROM game JOIN goal ON (game.id = goal.matchid)
 WHERE teamid = 'GER'
 
+SELECT player, teamid, stadium, mdate
+FROM game, goal 
+WHERE game.id = goal.matchid AND teamid = 'GER'
+
 4.
 SELECT team1, team2, player 
 FROM game JOIN goal ON (game.id = goal.matchid)
 WHERE player LIKE 'Mario%'
+
+SELECT team1, team2, player 
+FROM game, goal 
+WHERE game.id = goal.matchid AND player LIKE 'Mario%'
 
 5.
 SELECT player, teamid, coach, gtime
 FROM goal JOIN eteam ON (goal.teamid = eteam.id) 
 WHERE gtime<=10
 
+SELECT player, teamid, coach, gtime
+FROM goal, eteam
+WHERE gtime<=10 AND goal.teamid = eteam.id
+
 6.
 SELECT mdate, teamname
 FROM game JOIN eteam ON (game.team1 = eteam.id)
 WHERE coach = 'Fernando Santos'
+
+SELECT mdate, teamname
+FROM game, eteam 
+WHERE coach = 'Fernando Santos' AND game.team1 = eteam.id
 
 7.
 SELECT player
 FROM goal JOIN game ON (goal.matchid = game.id)
 WHERE stadium =  'National Stadium, Warsaw'
 
-More difficult questions
+SELECT player
+FROM goal, game 
+WHERE stadium =  'National Stadium, Warsaw' AND goal.matchid = game.id
+
+----More difficult questions
 
 8.
 SELECT DISTINCT player 
@@ -41,15 +61,29 @@ FROM game JOIN goal ON (game.id = goal.matchid)
 WHERE (team1 = 'GER' OR team2 = 'GER') AND teamid != 'GER'
 # DISTINCT表示不同的 排除了相同项
 
+SELECT DISTINCT player 
+FROM game, goal
+WHERE (team1 = 'GER' OR team2 = 'GER') AND teamid != 'GER' AND game.id = goal.matchid
+
 9.
 SELECT teamname, COUNT(gtime)
 FROM eteam JOIN goal ON (goal.teamid = eteam.id)
 GROUP BY teamname
 # 使用聚合函数 必须有GROUP BY来限制其他项
 
+SELECT teamname, COUNT(gtime)
+FROM eteam, goal
+WHERE goal.teamid = eteam.id
+GROUP BY teamname 
+
 10.
 SELECT stadium, COUNT(id)
 FROM game JOIN goal ON (goal.matchid = game.id)
+GROUP BY stadium
+
+SELECT stadium, COUNT(id)
+FROM game, goal
+WHERE goal.matchid = game.id
 GROUP BY stadium
 
 11.
@@ -58,10 +92,20 @@ FROM game JOIN goal ON (game.id = goal.matchid)
 WHERE team1 = 'POL' OR team2 = 'POL'
 GROUP BY matchid, mdate
 
+SELECT matchid, mdate, COUNT(gtime)
+FROM game, goal 
+WHERE (team1 = 'POL' OR team2 = 'POL') AND game.id = goal.matchid
+GROUP BY matchid, mdate 
+
 12.
 SELECT matchid, mdate, COUNT(gtime)
 FROM game JOIN goal ON (game.id = goal.matchid)
 WHERE teamid = 'GER'
+GROUP BY matchid, mdate
+
+SELECT matchid, mdate, COUNT(gtime)
+FROM game, goal
+WHERE teamid = 'GER' AND game.id = goal.matchid
 GROUP BY matchid, mdate
 
 13.
