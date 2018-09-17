@@ -20,6 +20,16 @@
   使用子查询 ALL 表示所有, 以及使用 ALL 时防止 null值的影响 详见第6题
   连接都可以写成子查询
   子查询和原查询如果是一个相同的表, 那么 WHERE 子句可以用于分组?
-  
-  
-  
+
+5.
+  DISTINCT 用于过滤重复值
+  聚合函数必须和 GROUP BY 子句一起使用 不要漏掉
+
+6.
+  CASE WHEN 子句 
+  CASE WHEN condition1 THEN value1 
+       WHEN condition2 THEN value2  
+       ELSE def_value 
+  END
+  已经将内连接写成了其他形式 
+  外连接, LEFT JOIN 表示左边所有的行都会在连接的表里, 全连接使用 FULL JOIN
