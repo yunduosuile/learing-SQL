@@ -1,0 +1,25 @@
+1. 
+  LIKE 关键字表示通配符
+  % 与 _ , % 能够表示多个字符(包括0个字符), 而 _ 只对应一个字符
+  --[jm]% 可以表示匹配括号里任意字符, 可以用 [^jm]% 进行否定 
+  CONCAT 函数, 例如 CONCAT('%', name, '%') 
+  如果 LIKE 后面跟的字段在表中, 可以用 CONCAT 函数, 例如 WHERE captial LIKE CONCAT('%', name, '%') 
+  REPLACE 函数 例如 REPLACE('abc', 'a', 'c') 会变成 'cbc'
+
+2.
+  ROUND 函数 例如 ROUND(7512.5, 0) 会输出7513, ROUND(7512.5, -2) 会输出7500
+  LEFT函数 例如 LEFT(name,1) 表示左边第一个字符
+
+3.
+  字符串里的单引号要用双引号来表示 例如 winner = 'EUGENE O''NEILL'
+  DESC 表示倒序 ORDER BY 默认是升序的
+  subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1  用于 ORDER BY   详见第14题
+
+4.
+  BETWEEN 是包括边界的 严格大于小于不能用 BETWEEN
+  使用子查询 ALL 表示所有, 以及使用 ALL 时防止 null值的影响 详见第6题
+  连接都可以写成子查询
+  子查询和原查询如果是一个相同的表, 那么 WHERE 子句可以用于分组?
+  
+  
+  
