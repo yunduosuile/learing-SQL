@@ -68,10 +68,10 @@ SELECT title, name
 FROM movie JOIN casting ON (movie.id = casting.movieid)
  JOIN actor ON (actor.id = casting.actorid)
 WHERE movie.id IN (SELECT movie.id 
- FROM movie JOIN casting ON (movie.id = casting.movieid)
- JOIN actor ON (actor.id = casting.actorid)
- WHERE name = 'Julie Andrews')
- AND ord = 1
+                   FROM movie JOIN casting ON (movie.id = casting.movieid)
+                              JOIN actor ON (actor.id = casting.actorid)
+                   WHERE name = 'Julie Andrews')
+                   AND ord = 1
   
 13.
 SELECT name 
@@ -91,8 +91,8 @@ ORDER BY count(actorid) DESC, title
 15.
 SELECT DISTINCT name
 FROM movie JOIN casting ON (movie.id = casting.movieid)
- JOIN actor ON (actor.id = casting.actorid)
+           JOIN actor ON (actor.id = casting.actorid)
 WHERE movieid IN (SELECT movieid 
- FROM casting JOIN actor ON (casting.actorid = actor.id)
- WHERE name = 'Art Garfunkel') 
- AND name <> 'Art Garfunkel'
+                  FROM casting JOIN actor ON (casting.actorid = actor.id)
+                  WHERE name = 'Art Garfunkel') 
+                  AND name <> 'Art Garfunkel'
