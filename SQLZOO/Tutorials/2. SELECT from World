@@ -59,7 +59,9 @@ FROM world
 WHERE LEFT(name, 1) = LEFT(capital,1) AND name <> capital
 # LEFT(name,1)表示左边第一个字符
 
-13.
+13. *
 SELECT name
 FROM world
 WHERE name LIKE '%a%' AND name LIKE '%e%' AND name LIKE '%i%' AND name LIKE '%o%' AND name LIKE '%u%' AND name NOT LIKE '% %'
+
+简单的SELECT以及WHERE的应用, 学习了函数ROUND, LENGTH, LEFT以及操作符NOT LIKE
