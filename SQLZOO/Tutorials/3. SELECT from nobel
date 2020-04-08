@@ -70,9 +70,11 @@ WHERE winner LIKE 'Sir%'
 ORDER BY yr DESC, winner
 # DESC表示倒序 ORDER BY默认是升序的
 
-14.
+14. *
 SELECT winner, subject 
 FROM nobel
 WHERE yr = 1984
 ORDER BY subject IN ('Chemistry','Physics'), subject, winner
 # subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1. 这里把 'Chemistry','Physics' 排到了最后
+
+前十题是简单的WHERE使用, 后面注意ORDER BY默认升序以及14题排序的方法
