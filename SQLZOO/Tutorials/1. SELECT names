@@ -76,3 +76,5 @@ SELECT name, REPLACE(capital, name, '')
 FROM world
 WHERE capital LIKE CONCAT('%',name,'%') AND capital <> name
 # REPLACE('aaa','a','c')  REPLACE函数的作用
+
+前十题主要是有关通配符%和_的使用, 后面提到了函数CONCAT以及REPLACE的使用.
