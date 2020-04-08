@@ -8,7 +8,14 @@ SELECT name, population
 FROM world
 WHERE name IN ('Sweden','Norway','Denmark')
 
+SELECT name, population
+FROM world
+WHERE name = 'Sweden' OR name = 'Norway' OR name = 'Denmark'
+
+这里使用IN 比使用OR 更快, 更优解.
+
 3.
 SELECT name, area 
 FROM world
 WHERE area BETWEEN 200000 AND 250000
+
