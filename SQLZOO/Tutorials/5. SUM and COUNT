@@ -38,3 +38,16 @@ SELECT continent
 FROM world
 GROUP BY continent
 HAVING SUM(population) >= 100000000
+
+
+NOBEL PRACTICE  
+12.Show the year and subject where 3 prizes were given. Show only years 2000 onwards.
+nobel(yr, subject, winner)
+
+SELECT yr, subject
+FROM nobel
+WHERE yr >= 2000
+GROUP BY yr,subject
+HAVING COUNT(*) = 3
+
+# 注意DISTINCT过滤不同值以及 HAVING对组过滤的含义.
