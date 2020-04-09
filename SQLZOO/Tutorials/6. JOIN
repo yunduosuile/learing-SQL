@@ -108,7 +108,7 @@ FROM game, goal
 WHERE teamid = 'GER' AND game.id = goal.matchid
 GROUP BY matchid, mdate
 
-13.
+13. *
 SELECT mdate, 
  team1, SUM(CASE WHEN teamid = team1 THEN 1 ELSE 0 END) AS score1,
  team2, SUM(CASE WHEN teamid = team2 THEN 1 ELSE 0 END) AS score2
@@ -120,3 +120,5 @@ ORDER BY mdate, matchid, team1, team2
 #      WHEN condition2 THEN value2  
 #      ELSE def_value 
 # END
+
+# 前七题没什么难度, 第十三题需要注意
