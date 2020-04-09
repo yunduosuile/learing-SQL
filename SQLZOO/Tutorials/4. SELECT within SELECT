@@ -137,9 +137,11 @@ WHERE population > ALL(SELECT 3*population
 
 SELECT name, continent
 FROM world AS w1
-WHERE population > (SELECT 3*max(population)
+WHERE population > (SELECT population
                     FROM world AS w2
-                    WHERE w1.continent = w2.continent AND w1.population != w2.population)       
+                    WHERE w1.continent = w2.continent 
+                    ORDER BY population DESC
+                    LIMIT 1,1)*3     
                     
 # 前四题分别使用了子查询与自联结的方式, 比较简单. 第五题子查询位于SELECT语句中, 后五题均使用了聚集函数，暂时不知道能否改成自联结, 并且需要
-再做一次.
+再做一次, 同时考虑自联结的问题.
