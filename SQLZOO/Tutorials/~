@@ -1,1 +1,25 @@
-SQLZOO的一部分题目
+总结 
+0. SELECT basic
+# 共3题 
+# 均为基础题无难度
+
+1. SELECT names
+# 共15题 
+# 前10题为基础题, 涉及通配符%和_
+# 11-15题有难度, 需要注意 
+# 学习了函数CONCAT, REPLACE
+
+2. SELECT from World
+# 共13题
+# 难度均不高, 但需要注意第13题
+# 学习了函数ROUND, LEFT, LENGTH, 操作符NOT LIKE 
+
+3. SELECT from nobel
+# 共14题
+# 前10题为基础题, 较简单
+# 11-14题有难度, 14题需注意
+# 字符串里的单引号要用双引号来表示 12题
+# ORDER BY默认是升序的 可以使用DESC实现降序 13题
+# subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1. 14题排序
+
+
