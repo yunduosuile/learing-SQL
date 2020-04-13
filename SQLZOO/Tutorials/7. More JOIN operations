@@ -96,3 +96,5 @@ WHERE movieid IN (SELECT movieid
                   FROM casting JOIN actor ON (casting.actorid = actor.id)
                   WHERE name = 'Art Garfunkel') 
                   AND name <> 'Art Garfunkel'
+
+# 前10题较简单, 重点关注后五题以及12.15题
