@@ -56,7 +56,7 @@ SELECT name, ROUND(population/1000000,2), ROUND(gdp/1000000000,2)
 FROM world
 WHERE continent = 'South America'
 
-# ROUND(7512.5, 0) ROUND函数第二个参数控制位数)
+# ROUND(7512.5, 0) ROUND函数第二个参数控制位数
 
 10. Show per-capita GDP for the trillion dollar countries to the nearest $1000.
 
