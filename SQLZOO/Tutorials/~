@@ -22,4 +22,15 @@
 # ORDER BY默认是升序的 可以使用DESC实现降序 13题
 # subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1. 14题排序
 
+4. SELECT within SELECT
+# 共10题
+# 前4题为简单的子查询
+# 第5题的子查询位于聚集函数中
+# 第6题涉及取最值的问题
+# 7-10题是相关子查询的问题, where连接值相同的地方
 
+5. SUM and COUNT
+# 共8题+1联系
+# 前8题较容易, 联系题需注意
+# 理解GROUP BY以及HAVING的含义
+# DISTINCT过滤不同的值
