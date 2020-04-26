@@ -54,3 +54,11 @@
 # 难度都不大
 # 理解左/右联结
 # 学习函数COALESCE, 使用IS NULL, IS NOT NULL
+
+8+. Numeric Examples
+# 共8题
+
+9-. Window functions
+# 共6题
+# 学习函数RANk OVER, PARTITION BY的使用, 用来表示排名
+# 5-6题可以再考虑, 涉及优化语言
