@@ -37,6 +37,22 @@ END
 
 # 没有get到NULL值的问题, 通过LIMIT的方式解决了问题, 再次提醒注意LIMIT m,n的含义
 
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+    SET N = N-1;
+  RETURN (
+      # Write your MySQL query statement below.
+      SELECT MAX(Salary)
+      FROM Employee
+      WHERE Salary <= (SELECT DISTINCT Salary
+                       FROM Employee
+                       ORDER BY Salary DESC
+                       LIMIT N,1)
+  );
+END
+
+# 这种写法承接176题第二种写法, 处理NULL值的思路与其相同
+
 178. 分数排名 Medium
 
 SELECT Score, Dense_RANK() OVER(ORDER BY Score DESC) AS Rank
@@ -44,6 +60,14 @@ FROM Scores
 ORDER BY Score DESC
 
 # 这里使用窗口函数, 但是系统支持Mysql版本目前没有更新窗口函数,因此使用Oracle数据库; 注意使用Dense_rank时排名是连续的
+
+SELECT S1.Score, COUNT(DISTINCT S2.Score) Rank
+FROM Scores S1 JOIN Scores S2
+ON S1.Score <= S2.Score
+GROUP BY S1.Id
+ORDER BY Score DESC
+
+# MySQL自联结解法, 注意联结条件以及COUNT()计数函数, 通过两者的结合得出Rank
 
 180. 连续出现的数字 Medium
 
@@ -54,6 +78,14 @@ JOIN Logs l3 ON l1.Id = l3.Id+2
 WHERE l1.Num = l2.Num AND l1.Num = l3.Num
 
 # 这里使用了自联结, 但是算法偏暴力, 后面有连续5次的题目不知道有没有更优解
+
+SELECT DISTINCT l1.Num consecutivenums
+FROM Logs l1 JOIN Logs l2
+ON l1.Num = l2.Num AND l2.Id - l1.Id BETWEEN 0 AND 2
+GROUP BY l1.ID
+HAVING COUNT(l2.ID) > 2
+
+# 自联结的另一种方式, 这种联结方式之前不常用; 注意这里考虑连续出现的方法与前面不同 
 
 181. 超过经理收入的员工 Easy
 
@@ -105,6 +137,7 @@ WHERE Salary >= COALESCE((SELECT DISTINCT Salary
                           LIMIT 2,1),0)
 ORDER BY Department, Salary DESC
 
-# 采用方法与184题相似, 使用COALESCE来处理部门不同工资数小于3为空值的问题
+# 采用方法与184题相似, 使用COALESCE来处理部门不同工资数小于3为空的问题
 
+# 总结 175, 181, 182, 183容易; 184, 185中等;  176, 177, 178, 180较难
 
