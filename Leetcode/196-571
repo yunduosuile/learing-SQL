@@ -4,7 +4,7 @@ DELETE P1.*
 FROM Person P1, Person P2
 WHERE P1.Email = P2.Email AND P1.Id > P2.Id
 
-# Delete 语句暂缓, 想法是先使用SELECT查找要删除的行然后换成DELETE
+# Delete语句暂缓, 想法是先使用SELECT查找要删除的行然后换成DELETE 
 
 197. 上升的温度 Easy
 
@@ -33,6 +33,16 @@ WHERE u1.Role IN ('client', 'driver') AND u2.Role IN ('client', 'driver') AND u1
 GROUP BY Day
 
 # 使用SUM()和COUNT()来计算取消率, 注意WHERE语句中条件较多
+
+SELECT Request_at Day, ROUND(1-SUM(Status = 'completed')/COUNT(Id),2) 'Cancellation Rate'
+FROM Trips JOIN Users U1
+ON Trips.Client_Id = U1.Users_Id 
+JOIN Users U2 ON Trips.Driver_Id = U2.Users_Id
+WHERE U1.Banned = 'No' AND U2.Banned = 'No' AND Request_at BETWEEN '2013-10-01' AND '2013-10-03'
+GROUP BY Request_at
+ORDER BY Day
+
+# 注意这里不存在'partner'的问题, 下面写的更简单一点
 
 511. 游戏玩法分析 I Easy
 
@@ -75,8 +85,19 @@ A2.event_date = (SELECT MIN(event_date)
 
 # 写好联结一步步慢慢来
 
-569. 员工薪水中位数 Hard
+SELECT ROUND(
+(SELECT COUNT(A1.player_id)
+ FROM Activity A1, (SELECT A2.player_id, A2.event_date
+                    FROM Activity A2
+                    WHERE A2.event_date = (SELECT MIN(event_date)
+                                           FROM Activity A3
+                                           WHERE A2.player_id = A3.player_id)) T1
+ WHERE A1.player_id = T1.player_id AND DATEDIFF(A1.event_date, T1.event_date) = 1) / 
+ (SELECT COUNT(DISTINCT player_id) FROM Activity), 2) fraction
+ 
+# 可能稍快一些, 构造一个满足条件的表
 
+569. 员工薪水中位数 Hard
 
 # 卡壳
 
@@ -96,3 +117,4 @@ WHERE t1.num >= 5
 
 # 卡壳
 
+# 总结 197, 262, 511, 512, 534, 550, 570 Easy; 196 Medium; 569, 571 Hard
