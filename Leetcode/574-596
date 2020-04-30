@@ -1,0 +1,105 @@
+574. 当选者 Medium
+
+SELECT Name
+FROM Candidate
+WHERE id = (SELECT CandidateId
+            FROM Vote
+            GROUP BY CandidateId
+            ORDER BY COUNT(CandidateId) DESC
+            LIMIT 1)
+
+# 可以使用子查询, 也可以写联结
+
+577. 员工奖金 Easy
+
+SELECT name, bonus
+FROM Employee LEFT JOIN Bonus
+ON Employee.empId = Bonus.empId
+WHERE bonus < 1000 OR bonus IS NULL
+
+# 注意NULL值即可
+
+578. 查询回答率最高的问题
+
+SELECT question_id survey_log
+FROM survey_log
+GROUP BY question_id
+HAVING SUM(action = 'answer') = (SELECT SUM(action = 'answer') s
+                                 FROM survey_log
+                                 GROUP BY question_id
+                                 ORDER BY s DESC
+                                 LIMIT 1) 
+                                 
+# 依然是找最值的问题, 不唯一写了分组函数, 注意HAVING过滤分组
+
+579. 查询员工的累计薪水 Hard
+
+SELECT * FROM
+(SELECT E2.Id id, E1.Month month, SUM(E2.Salary) Salary
+FROM Employee E1, Employee E2
+WHERE E1.Id = E2.Id AND E1.Month >= E2.Month AND E1.Month - E2.Month < 3
+GROUP BY E1.Id, E1.Month) T1
+WHERE T1.Month != (SELECT MAX(Month)
+                   FROM Employee E3
+                   WHERE T1.Id = E3.Id)
+ORDER BY id, month DESC
+
+# 描述不清, 要求每个月以及包括这月在内近三个月的累计工资, 先构造满足条件的表, 然后去掉当前月(最大月)就可以了
+
+580. 统计各专业学生人数 Medium
+
+SELECT department.dept_name, COUNT(student.student_id) student_number
+FROM department LEFT JOIN student
+ON department.dept_id = student.dept_id
+GROUP BY department.dept_name
+ORDER BY student_number DESC, dept_name
+
+# 简单的联结和分组
+
+584. 寻找用户推荐人 Easy
+
+SELECT name
+FROM customer
+WHERE referee_id != 2 OR referee_id IS NULL
+
+# 简单看一下NULL
+
+585. 2016年的投资 Medium
+
+SELECT SUM(TIV_2016) TIV_2016
+FROM insurance i1
+WHERE (LAT, LON) NOT IN (SELECT LAT,LON
+                         FROM insurance i2
+                         WHERE i1.PID !=  i2.PID) AND
+      TIV_2015 IN (SELECT TIV_2015
+                   FROM insurance i3
+                   WHERE i1.PID != i3.PID)
+
+# 根据所给条件写两个子查询即可
+
+586. 订单最多的客户 Easy
+
+SELECT customer_number
+FROM orders
+GROUP BY customer_number
+ORDER BY COUNT(order_number) DESC
+LIMIT 1
+
+# 简单
+
+595. 大的国家 Easy
+
+SELECT name, population, area
+FROM World
+WHERE area > 3000000 OR population > 25000000
+
+# 简单
+
+596. 超过5名学生的课 Easy
+
+SELECT class
+FROM courses
+GROUP BY class
+HAVING COUNT(DISTINCT student) >= 5
+
+# Note注意一下
