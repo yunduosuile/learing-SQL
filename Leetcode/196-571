@@ -99,9 +99,19 @@ SELECT ROUND(
 
 569. 员工薪水中位数 Hard
 
+SELECT Id, Company, Salary
+FROM Employee
+WHERE Id IN (SELECT E1.Id
+             FROM Employee E1 JOIN Employee E2
+             ON E1.Company = E2.Company
+             GROUP BY E1.Id
+             HAVING SUM(E1.Salary >= E2.Salary) >= COUNT(E2.Salary)/2 
+             AND SUM(E1.Salary <= E2.Salary) >= COUNT(E2.Salary)/2)
+GROUP BY Company, Salary
+ORDER BY Company, Salary
 
-# 中位数求法的思路：
-# 将整个有序集合分为两个子集，每个子集包含（集合的一半+1）个元素，两个子集的共同部分就是集合的中位数
+# 注意求中位数时候的过滤条件
+# 最外面的分组函数是因为一个公司有相同的工资为中位数.
 
 570. 至少有5名直接下属的经理 Medium
 
@@ -117,6 +127,15 @@ WHERE t1.num >= 5
 
 571. 给定数字的频率查询中位数 Hard
 
-# 卡壳
+SELECT AVG(Numbers.Number) median
+FROM (SELECT N1.Number, SUM(N2.Frequency) lf
+      FROM Numbers N1, Numbers N2
+      WHERE N1.Number >= N2.Number
+      GROUP BY N1.Number) t1, Numbers, (SELECT SUM(Frequency) sf FROM Numbers) t2
+WHERE t1.Number = Numbers.Number 
+AND lf >= sf/2 AND sf-lf+Frequency >= sf/2
+
+# 中位数 大于等于它的数超过总数的一半 and 小于等于它的数超过总数的一半
+# 理解此题的Frequency即明白做法, 构造了两个表来构造条件
 
 # 总结 197, 262, 511, 512, 534, 550, 570 Easy; 196 Medium; 569, 571 Hard
