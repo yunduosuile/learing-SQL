@@ -10,6 +10,15 @@ WHERE id = (SELECT CandidateId
 
 # 可以使用子查询, 也可以写联结
 
+SELECT Name
+FROM Candidate RIGHT JOIN Vote
+ON Candidate.id = CandidateID
+GROUP BY Name
+ORDER BY COUNT(Vote.id) DESC
+LIMIT 1
+
+# 两种思考路径     
+
 577. 员工奖金 Easy
 
 SELECT name, bonus
@@ -34,24 +43,21 @@ HAVING SUM(action = 'answer') = (SELECT SUM(action = 'answer') s
 
 579. 查询员工的累计薪水 Hard
 
-SELECT * FROM
-(SELECT E2.Id id, E1.Month month, SUM(E2.Salary) Salary
-FROM Employee E1, Employee E2
-WHERE E1.Id = E2.Id AND E1.Month >= E2.Month AND E1.Month - E2.Month < 3
-GROUP BY E1.Id, E1.Month) T1
-WHERE T1.Month != (SELECT MAX(Month)
-                   FROM Employee E3
-                   WHERE T1.Id = E3.Id)
-ORDER BY id, month DESC
+SELECT E1.Id id, E1.Month month, SUM(E2.Salary) Salary
+FROM Employee E1 JOIN Employee E2
+ON E1.Id = E2.Id AND E1.Month >= E2.Month AND E1.Month - E2.Month < 3 AND
+E1.Month != (SELECT MAX(E3.Month) FROM Employee E3 WHERE E1.Id = E3.Id)
+GROUP BY E1.Id, E1.Month
+ORDER BY E1.Id, E1.Month DESC
 
-# 描述不清, 要求每个月以及包括这月在内近三个月的累计工资, 先构造满足条件的表, 然后去掉当前月(最大月)就可以了
+# 描述不清, 要得出每个月以及包括这月在内近三个月的累计工资, 先构造满足条件的表, 然后去掉当前月(最大月)就可以了
 
 580. 统计各专业学生人数 Medium
 
-SELECT department.dept_name, COUNT(student.student_id) student_number
-FROM department LEFT JOIN student
+SELECT dept_name, COUNT(student_id) student_number
+FROM student RIGHT JOIN department
 ON department.dept_id = student.dept_id
-GROUP BY department.dept_name
+GROUP BY dept_name
 ORDER BY student_number DESC, dept_name
 
 # 简单的联结和分组
@@ -103,3 +109,5 @@ GROUP BY class
 HAVING COUNT(DISTINCT student) >= 5
 
 # Note注意一下
+
+# 574, 577, 578, 580, 584, 585, 586, 595, 596 Easy; 579 Medium
