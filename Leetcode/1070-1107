@@ -1,0 +1,76 @@
+1070. 产品销售分析 III Medium
+
+# 卡
+
+1075. 项目员工 I Easy
+
+SELECT project_id, ROUND(AVG(experience_years),2) average_years
+FROM Project JOIN Employee
+ON Project.employee_id = Employee.employee_id
+GROUP BY project_id
+
+# 较容易
+
+1076. 项目员工 II Easy
+
+SELECT project_id
+FROM Project
+GROUP BY project_id
+HAVING COUNT(employee_id) = (SELECT COUNT(employee_id) s
+                             FROM Project
+                             GROUP BY project_id
+                             ORDER BY s DESC
+                             LIMIT 1)
+                             
+# 累
+
+1077. 项目员工 III Medium
+
+SELECT P1.project_id, P1.employee_id
+FROM Project P1 JOIN Employee
+ON P1.employee_id = Employee.employee_id
+WHERE experience_years = (SELECT MAX(experience_years)
+                          FROM Project P2 JOIN Employee
+                          ON P2.employee_id = Employee.employee_id
+                          WHERE P1.project_id = P2.project_id)
+                          
+1082. 销售分析 I Easy
+
+SELECT seller_id
+FROM Sales
+GROUP BY seller_id
+HAVING SUM(price) >= ALL(SELECT SUM(price)
+                         FROM Sales
+                         GROUP BY seller_id)
+                         
+1083. 销售分析 II Easy
+
+SELECT DISTINCT buyer_id 
+FROM Sales
+WHERE buyer_id IN (SELECT buyer_id 
+                   FROM Sales JOIN Product
+                   ON Sales.product_id = Product.product_id
+                   WHERE product_name = 'S8')
+AND buyer_id NOT IN (SELECT buyer_id 
+                     FROM Sales JOIN Product
+                     ON Sales.product_id = Product.product_id
+                     WHERE product_name = 'iPhone')
+                     
+1084. 销售分析 III Easy
+
+SELECT Product.product_id, product_name
+FROM Product JOIN Sales
+ON Product.product_id = Sales.product_id
+GROUP BY Product.product_id
+HAVING MAX(sale_date) <= '2019-03-31' AND MIN(sale_date) >= '2019-01-01' 
+
+1097. 游戏玩法分析 V Hard
+
+SELECT install_dt, COUNT(A1.player_id) installs, ROUND(COUNT(A2.player_id)/COUNT(A1.player_id),2) Day1_retention
+FROM Activity A1 JOIN (SELECT DISTINCT player_id, MIN(event_date) install_dt
+                       FROM Activity
+                       GROUP BY player_id) s
+ON A1.event_date = install_dt AND A1.player_id = s.player_id LEFT JOIN Activity A2
+ON A1.event_date = A2.event_date - 1 AND A1.player_id = A2.player_id
+GROUP BY A1.event_date
+ORDER BY A1.event_date
