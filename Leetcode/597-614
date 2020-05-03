@@ -139,3 +139,5 @@ GROUP BY followee
 ORDER BY followee
 
 # 要过滤一次重复值
+
+# 597, 602, 603, 607, 608, 610, 612, 613, 614 Easy; 601 Medium
