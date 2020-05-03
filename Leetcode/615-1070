@@ -1,0 +1,106 @@
+615. 平均工资: 部门与公司比较 Hard
+
+SELECT t1.pay_month, department_id, CASE WHEN t2.avg_mount > t1.avg_mount THEN 'higher'
+                                         WHEN t2.avg_mount = t1.avg_mount THEN 'same'
+                                         WHEN t2.avg_mount < t1.avg_mount THEN 'lower'
+                                    END comparison
+FROM 
+(SELECT left(pay_date,7) pay_month, avg(amount) avg_mount
+FROM salary
+GROUP BY pay_month) t1 RIGHT JOIN
+(SELECT left(pay_date,7) pay_month, department_id, avg(amount) avg_mount
+FROM salary JOIN employee
+ON salary.employee_id = employee.employee_id
+GROUP BY pay_month,department_id) t2
+ON t1.pay_month = t2.pay_month
+
+# 构造两个表来做, 处理时间的时候也可以使用DATE_FORMAT(pay_date, '%Y-%m')来处理, 要处理发薪日不在同一天的问题
+
+618. 学生地理信息报告 Hard
+
+# 卡壳
+
+619. 只出现一次的最大数字 Easy
+
+SELECT (SELECT num
+        FROM my_numbers
+        GROUP BY num
+        HAVING COUNT(num) = 1
+        ORDER BY num DESC
+        LIMIT 1) num
+
+# 在记一次怎么处理NULL值
+
+620. 有趣的电影 Easy
+
+SELECT *
+FROM cinema
+WHERE description != 'boring' AND id%2 = 1
+ORDER BY rating DESC
+
+# 学习奇偶判断
+
+626. 换座位 Medium
+
+SELECT *
+FROM 
+(SELECT s1.id, s2.student
+FROM seat s1 JOIN seat s2
+ON s1.id = s2.id-1
+WHERE s1.id%2 = 1
+UNION 
+SELECT s1.id, s2.student
+FROM seat s1 JOIN seat s2
+ON s1.id = s2.id+1
+WHERE s1.id%2 = 0
+UNION 
+SELECT * 
+FROM seat
+WHERE id = (SELECT MAX(id) FROM seat) AND id%2 = 1) t3
+ORDER BY id 
+
+# 有点长但是思路比较简单
+
+627. 交换工资 Easy
+
+UPDATE salary
+SET sex = CASE sex WHEN 'm' THEN 'f'
+                   ELSE 'm'
+          END
+
+# UPDATE语句不会
+
+1045. 买下所有产品的客户 Medium
+
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT Customer.product_key) = (SELECT COUNT(product_key) FROM Product)
+
+# 发现不需要写联结
+
+1050. 合作过至少三次的演员和导演 Easy
+
+SELECT ACTOR_ID, DIRECTOR_ID
+FROM ActorDirector
+GROUP BY actor_id,director_id
+HAVING COUNT(timestamp) >= 3
+
+# 简单
+
+1068. 产品销售分析 I
+
+SELECT product_name, year, price
+FROM Product JOIN Sales 
+ON Product.product_id = Sales.product_id
+
+# 简单的害怕
+
+1069. 产品销售分析 II
+
+SELECT product_id, SUM(quantity) total_quantity
+FROM Sales
+GROUP BY product_id
+
+# 简单
+
