@@ -138,4 +138,15 @@ AND lf >= sf/2 AND sf-lf+Frequency >= sf/2
 # 中位数 大于等于它的数超过总数的一半 and 小于等于它的数超过总数的一半
 # 理解此题的Frequency即明白做法, 构造了两个表来构造条件
 
+SELECT avg(Number) median
+FROM Numbers
+WHERE Number IN (SELECT N1.Number
+FROM Numbers N1 JOIN Numbers N2
+ON N1.Number >= N2.Number
+GROUP BY N1.Number
+HAVING SUM(N2.Frequency) >= (SELECT SUM(Frequency) FROM Numbers)/2
+AND SUM(N2.Frequency) - avg(N1.Frequency) <= (SELECT SUM(Frequency) FROM Numbers)/2)
+
+# 使用分组函数后没法直接对Number进行运算, 因而使用了子查询
+
 # 总结 197, 262, 511, 512, 534, 550, 570 Easy; 196 Medium; 569, 571 Hard
