@@ -1,0 +1,113 @@
+1112. 每位学生的最高成绩 Medium
+
+SELECT student_id, MIN(course_id) course_id, grade
+FROM Enrollments
+WHERE (student_id, grade) IN
+(SELECT student_id, MAX(grade)
+FROM Enrollments
+GROUP BY student_id)
+GROUP BY student_id
+ORDER BY student_id
+
+# 这题的主键感觉有问题
+
+1113. 报告的记录 Easy
+
+SELECT extra report_reason, COUNT(DISTINCT post_id) report_count
+FROM Actions
+WHERE action = 'report' AND extra IS NOT NULL AND action_date = '2019-07-04'
+GROUP BY report_reason
+
+# 读懂题有点难
+
+1126. 查询活跃业务 Medium
+
+SELECT business_id
+FROM Events, (SELECT event_type, avg(occurences) avg_occurences
+              FROM Events
+              GROUP BY event_type) s
+WHERE Events.event_type = s.event_type AND Events.occurences > avg_occurences
+GROUP BY business_id
+HAVING COUNT(Events.event_type) >= 2
+
+1127. 用户购买平台 Hard
+
+SELECT t1.spend_date, t1.platform, IFNULL(SUM(amount),0) total_amount, COUNT(user_id) total_users
+FROM 
+(SELECT spend_date, 'mobile' platform FROM Spending
+UNION 
+SELECT spend_date, 'desktop' FROM Spending
+UNION
+SELECT spend_date, 'both' FROM Spending) t1 LEFT JOIN 
+(SELECT user_id, spend_date, CASE WHEN SUM(platform IN ('desktop','mobile')) = 2 THEN 'both'
+                                  ELSE platform
+                             END platform, SUM(amount) amount
+FROM Spending 
+GROUP BY user_id, spend_date) t2
+ON t1.spend_date = t2.spend_date AND t1.platform = t2.platform
+GROUP BY t1.spend_date, t1.platform
+ORDER BY t1.platform = 'both', t1.platform, t1.spend_date
+
+# 学习构造新表t1的方法, 另本题通过构造两个表得出结果
+
+1132. 报告的记录 II Medium
+
+SELECT ROUND(avg(c)*100,2) average_daily_percent
+FROM 
+(SELECT COUNT(DISTINCT Removals.post_id)/COUNT(DISTINCT Actions.post_id) c
+FROM Actions LEFT JOIN Removals
+ON Actions.post_id = Removals.post_id
+WHERE action = 'report' AND extra = 'spam'
+GROUP BY action_date) s
+
+# 要注意去重, 因为使用的是左联结
+
+1141. 查询近30天活跃用户数 Easy
+
+SELECT activity_date day, COUNT(DISTINCT user_id) active_users
+FROM Activity
+WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'
+GROUP BY activity_date
+
+# 总算简单不卡了
+
+1142. 过去30天的用户活动 II Easy
+
+SELECT ROUND(IFNULL(SUM(s)/COUNT(user_id),0),2) average_sessions_per_user
+FROM 
+(SELECT DISTINCT user_id, COUNT(DISTINCT session_id) s
+FROM Activity
+WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'
+GROUP BY user_id) t
+
+# 想的太难了
+
+1148. 文章浏览 I Easy
+
+SELECT DISTINCT author_id id
+FROM Views
+WHERE author_id = viewer_id
+ORDER BY author_id
+
+# 简单真好
+
+1149. 文章浏览 II Medium
+
+SELECT DISTINCT viewer_id id
+FROM Views
+GROUP BY viewer_id, view_date
+HAVING COUNT(DISTINCT article_id) >= 2
+ORDER BY id
+
+# 也还行
+
+1158. 市场分析 I Medium
+
+SELECT user_id buyer_id, join_date, COUNT(order_id) orders_in_2019
+FROM Users LEFT JOIN Orders
+ON Users.user_id = Orders.buyer_id AND order_date > '2018-12-31'
+GROUP BY user_id
+
+# 过滤条件要放到ON中, 这样可以保留左边表的信息; 如果使用WHERE则不行
+
+
