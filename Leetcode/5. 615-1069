@@ -29,7 +29,7 @@ SELECT (SELECT num
         ORDER BY num DESC
         LIMIT 1) num
 
-# 在记一次怎么处理NULL值
+# 再记一次怎么处理NULL值
 
 620. 有趣的电影 Easy
 
@@ -104,3 +104,5 @@ GROUP BY product_id
 
 # 简单
 
+# 第二次的思路与第一次惊人的一致
+# 619, 620, 1045, 1050, 1068, 1069 Easy; 615, 626 Medium; 618, 627 Hard 
