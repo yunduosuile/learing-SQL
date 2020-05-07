@@ -1,0 +1,164 @@
+1159. 市场分析 II Hard
+
+SELECT user_id seller_id, CASE WHEN favorite_brand = item_brand THEN 'yes'
+                               ELSE 'no'
+                          END 2nd_item_fav_brand 
+FROM Users LEFT JOIN (SELECT O1.seller_id, O1.order_date, O1.item_id
+                      FROM Orders O1 JOIN Orders O2
+                      ON O1.seller_id = O2.seller_id AND O1.order_date > O2.order_date
+                      GROUP BY O1.seller_id, O1.order_date
+                      HAVING COUNT(O2.order_date) = 1) s
+ON Users.user_id = s.seller_id
+LEFT JOIN Items ON s.item_id = Items.item_id
+
+# 注意处理时间
+
+1164. 指定日期的产品价格 Medium
+
+SELECT s1.product_id, CASE WHEN price IS NULL THEN 10
+                           ELSE price
+                      END price
+FROM (SELECT DISTINCT product_id
+      FROM Products) s1
+LEFT JOIN (SELECT product_id, new_price price
+           FROM Products P1
+           WHERE change_date = (SELECT MAX(change_date)
+                                FROM Products P2
+                                WHERE P1.product_id = P2.product_id AND P2.change_date <= '2019-08-16')
+          ) s2
+ON s1.product_id = s2.product_id
+
+# 三个子查询
+
+1173. 即时食物配送 I Easy
+
+SELECT ROUND(SUM(order_date = customer_pref_delivery_date)/COUNT(delivery_id)*100,2) immediate_percentage
+FROM Delivery
+
+# SUM和COUNT一起使用
+
+1174. 即时食物配送 II Medium
+
+SELECT ROUND(SUM(order_date = customer_pref_delivery_date)/COUNT(delivery_id)*100,2) immediate_percentage
+FROM Delivery D1
+WHERE order_date = (SELECT MIN(order_date)
+                    FROM Delivery D2
+                    WHERE D1.customer_id = D2.customer_id)
+
+# 多一个子查询也简单
+
+1179. 重新格式化部门表 Easy
+
+# 卡
+
+1193. 每月交易 I Medium
+
+SELECT DATE_FORMAT(trans_date,'%Y-%m') month, country, 
+COUNT(id) trans_count, 
+SUM(state = 'approved') approved_count, SUM(amount) trans_total_amount, 
+SUM(IF(state = 'approved', amount ,0)) approved_total_amount
+FROM Transactions
+GROUP BY DATE_FORMAT(trans_date,'%Y-%m'), country
+
+# 一项项写起来比较长
+
+1194. 锦标赛优胜者 Hard
+
+SELECT GROUP_ID, MIN(PLAYER_ID) PLAYER_ID
+FROM (SELECT GROUP_ID,PLAYER_ID, score
+      FROM (SELECT group_id, player_id, SUM(score) score
+            FROM (SELECT group_id, player_id, SUM(first_score) score
+                  FROM Players JOIN Matches
+                  ON Players.player_id = Matches.first_player
+                  GROUP BY player_id
+                  UNION ALL
+                  SELECT group_id, player_id, SUM(second_score)
+                  FROM Players JOIN Matches
+                  ON Players.player_id = Matches.second_player
+                  GROUP BY player_id
+                 ) s1
+            GROUP BY player_id, group_id
+            ) s2
+      WHERE score = (SELECT MAX(score)
+                     FROM (SELECT group_id, player_id, SUM(score) score
+                           FROM (SELECT group_id, player_id, SUM(first_score) score
+                                 FROM Players JOIN Matches
+                                 ON Players.player_id = Matches.first_player
+                                 GROUP BY player_id
+                                 UNION ALL
+                                 SELECT group_id, player_id, SUM(second_score)
+                                 FROM Players JOIN Matches
+                                 ON Players.player_id = Matches.second_player
+                                 GROUP BY player_id
+                                ) s1
+                           GROUP BY player_id, group_id
+                          ) s3
+                     WHERE s2.group_id = s3.group_id)
+     ) s4
+GROUP BY GROUP_ID
+
+# 写的有点长看起来好麻烦
+
+SELECT GROUP_ID,PLAYER_ID
+FROM (SELECT group_id, player_id, SUM(score) score
+      FROM (SELECT group_id, player_id, SUM(first_score) score
+            FROM Players JOIN Matches
+            ON Players.player_id = Matches.first_player
+            GROUP BY player_id
+            UNION ALL
+            SELECT group_id, player_id, SUM(second_score)
+            FROM Players JOIN Matches
+            ON Players.player_id = Matches.second_player
+            GROUP BY player_id
+           ) s1
+      GROUP BY player_id
+      ORDER BY group_id, score DESC, player_id
+     ) s2
+GROUP BY GROUP_ID
+
+# 这里GROUP BY默认输出每组的第一行, 通过在表中排出这样的顺序即可
+
+1204. 最后一个能进入电梯的人 Medium
+
+SELECT Q1.person_name
+FROM Queue Q1 JOIN Queue Q2
+ON Q1.turn >= Q2.turn
+GROUP BY Q1.turn
+HAVING SUM(Q2.weight) <= 1000
+ORDER BY Q1.turn DESC
+LIMIT 1
+
+# 自联结就可以解决
+
+1205. 每月交易II Medium
+
+SELECT month, country, SUM(approved_count) approved_count, 
+SUM(approved_amount) approved_amount, SUM(chargeback_count) chargeback_count, SUM(chargeback_amount) chargeback_amount
+FROM (SELECT DATE_FORMAT(Transactions.trans_date,'%Y-%m') month, country, 
+             SUM(state = 'approved') approved_count,  
+             SUM(IF(state = 'approved', amount ,0)) approved_amount, 
+             SUM(0) chargeback_count, 
+             SUM(0) chargeback_amount
+     FROM Transactions LEFT JOIN Chargebacks
+     ON Transactions.id = Chargebacks.trans_id
+     GROUP BY DATE_FORMAT(Transactions.trans_date,'%Y-%m'), country
+     UNION ALL
+     SELECT DATE_FORMAT(Chargebacks.trans_date,'%Y-%m') month, country, SUM(0) approved_count,  
+            SUM(0) approved_amount, 
+            COUNT(Chargebacks.trans_id) chargeback_count, 
+            SUM(IF(Chargebacks.trans_date IS NOT NULL, amount ,0)) chargeback_amount
+     FROM Transactions RIGHT JOIN Chargebacks
+     ON Transactions.id = Chargebacks.trans_id
+     GROUP BY DATE_FORMAT(Chargebacks.trans_date,'%Y-%m'), country) s
+GROUP BY month, country
+HAVING SUM(approved_count) != 0 OR SUM(chargeback_count) != 0
+
+# 通过左联结和右联结实现全联结, 然后处理各种条件
+
+1211. 查询结果的质量和占比 Easy
+
+SELECT query_name, ROUND(AVG(rating/position),2) quality, ROUND(SUM(rating<3)/COUNT(rating)*100,2) poor_query_percentage
+FROM Queries
+GROUP BY query_name 
+
+# 容易
