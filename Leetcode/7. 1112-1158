@@ -2,33 +2,34 @@
 
 SELECT student_id, MIN(course_id) course_id, grade
 FROM Enrollments
-WHERE (student_id, grade) IN
-(SELECT student_id, MAX(grade)
-FROM Enrollments
-GROUP BY student_id)
+WHERE (student_id,grade) IN (SELECT student_id, MAX(grade)
+                             FROM Enrollments
+                             GROUP BY student_id)
 GROUP BY student_id
 ORDER BY student_id
 
-# 这题的主键感觉有问题
+# 感觉有哪里不对劲
 
 1113. 报告的记录 Easy
 
 SELECT extra report_reason, COUNT(DISTINCT post_id) report_count
 FROM Actions
-WHERE action = 'report' AND extra IS NOT NULL AND action_date = '2019-07-04'
-GROUP BY report_reason
+WHERE action_date = '2019-07-04' AND action = 'report'
+GROUP BY extra
 
 # 读懂题有点难
 
 1126. 查询活跃业务 Medium
 
 SELECT business_id
-FROM Events, (SELECT event_type, avg(occurences) avg_occurences
-              FROM Events
-              GROUP BY event_type) s
-WHERE Events.event_type = s.event_type AND Events.occurences > avg_occurences
+FROM Events JOIN (SELECT event_type, AVG(occurences) avg_occurences
+                 FROM Events
+                 GROUP BY event_type) s
+ON Events.event_type = s.event_type
 GROUP BY business_id
-HAVING COUNT(Events.event_type) >= 2
+HAVING SUM(occurences > avg_occurences) >= 2
+
+# 思路简单  
 
 1127. 用户购买平台 Hard
 
@@ -61,6 +62,17 @@ WHERE action = 'report' AND extra = 'spam'
 GROUP BY action_date) s
 
 # 要注意去重, 因为使用的是左联结
+
+SELECT ROUND(avg(c)*100,2) average_daily_percent
+FROM
+(SELECT COUNT(Removals.post_id)/COUNT(s.post_id) c
+FROM Removals RIGHT JOIN (SELECT DISTINCT action_date, post_id
+                         FROM Actions
+                         WHERE action = 'report' AND extra = 'spam') s
+ON Removals.post_id = s.post_id
+GROUP BY action_date) s1
+
+# 这样可以先去重
 
 1141. 查询近30天活跃用户数 Easy
 
@@ -105,9 +117,10 @@ ORDER BY id
 
 SELECT user_id buyer_id, join_date, COUNT(order_id) orders_in_2019
 FROM Users LEFT JOIN Orders
-ON Users.user_id = Orders.buyer_id AND order_date > '2018-12-31'
+ON Users.user_id = Orders.buyer_id AND order_date BETWEEN '2019-01-01' AND '2019-12-31'
 GROUP BY user_id
 
 # 过滤条件要放到ON中, 这样可以保留左边表的信息; 如果使用WHERE则不行
 
 
+# 1113, 1126, 1141, 1148, 1149 Easy; 1112, 1132, 1142, 1158 Medium; 1127 Hard
