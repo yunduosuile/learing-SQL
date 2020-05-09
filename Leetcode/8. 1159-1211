@@ -11,7 +11,7 @@ FROM Users LEFT JOIN (SELECT O1.seller_id, O1.order_date, O1.item_id
 ON Users.user_id = s.seller_id
 LEFT JOIN Items ON s.item_id = Items.item_id
 
-# 注意处理时间
+# 注意处理时间 两个左联结
 
 1164. 指定日期的产品价格 Medium
 
@@ -30,6 +30,17 @@ ON s1.product_id = s2.product_id
 
 # 三个子查询
 
+SELECT DISTINCT Products.product_id, IFNULL(price,10) price
+FROM Products LEFT JOIN (SELECT P1.product_id, P2.new_price price
+                         FROM Products P1 LEFT JOIN Products P2
+                         ON P1.product_id = P2.product_id AND P1.change_date <= P2.change_date
+                         WHERE P1.change_date <= '2019-08-16' AND P2.change_date <= '2019-08-16'
+                         GROUP BY P1.product_id, P1.change_date
+                         HAVING COUNT(P2.change_date) = 1) s 
+ON Products.product_id = s.product_id
+
+# 简单很多
+
 1173. 即时食物配送 I Easy
 
 SELECT ROUND(SUM(order_date = customer_pref_delivery_date)/COUNT(delivery_id)*100,2) immediate_percentage
@@ -46,6 +57,16 @@ WHERE order_date = (SELECT MIN(order_date)
                     WHERE D1.customer_id = D2.customer_id)
 
 # 多一个子查询也简单
+
+SELECT ROUND(SUM(order_date = customer_pref_delivery_date)/COUNT(delivery_id)*100,2) immediate_percentage
+FROM 
+(SELECT D1.delivery_id, D1.order_date, D1.customer_pref_delivery_date
+FROM Delivery D1 JOIN Delivery D2
+ON D1.customer_id = D2.customer_id AND D1.order_date >= D2.order_date
+GROUP BY D1.customer_id, D1.order_date
+HAVING COUNT(D1.order_date) = 1) s
+
+# 第二次写的复杂了
 
 1179. 重新格式化部门表 Easy
 
@@ -177,3 +198,5 @@ FROM Queries
 GROUP BY query_name 
 
 # 容易
+
+# 1164, 1173, 1174, 1193, 1204, 1211 Easy; 1159, 1194, 1205 Medium; 1179 Hard
