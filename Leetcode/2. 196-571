@@ -175,4 +175,5 @@ AND SUM(N2.Frequency) - avg(N1.Frequency) <= (SELECT SUM(Frequency) FROM Numbers
 # 使用分组函数后没法直接对Number进行运算, 因而使用了子查询
 
 # 总结 197, 262, 511, 512, 534, 550, 570 Easy; 196 Medium; 569, 571 Hard
-# 196, 262, 550, 569, 571题需要注意; 注意中位数的构造条件; DATADIFF(), TIMESTAMPDIFF()时间函数的使用
+# 196, 197, 262, 550, 569, 571题需要注意; 注意中位数的构造条件(569,571); DATADIFF(), TIMESTAMPDIFF()时间函数的使用(197); 
+  DELETE语句的使用(196); SUM和COUNT计算比率问题(262,550); 
