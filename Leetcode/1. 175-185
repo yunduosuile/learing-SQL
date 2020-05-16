@@ -165,4 +165,4 @@ ORDER BY Department, Salary DESC
 # 采用方法与184题相似, 使用COALESCE来处理部门不同工资数小于3为空的问题, 也可以使用简单的IFNULL来处理NULL值问题
 
 # 总结 175, 181, 182, 183 Easy; 184, 185 Medium; 176, 177, 178, 180 Hard
-# 180题需要注意; 记忆LIMIT n,m含义; 注意DISTINCT过滤值以及列命名的问题 
+# 176, 178, 180, 185题需要注意; 记忆LIMIT n,m含义(185); 注意DISTINCT过滤重复值(185); 注意给列命名(178); 注意NULL值处理(176)
