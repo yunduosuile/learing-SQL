@@ -19,6 +19,7 @@ LIMIT 1
 
 # 两种思考路径     
 
+
 577. 员工奖金 Easy
 
 SELECT name, bonus
@@ -27,6 +28,7 @@ ON Employee.empId = Bonus.empId
 WHERE bonus < 1000 OR bonus IS NULL
 
 # 注意NULL值即可
+
 
 578. 查询回答率最高的问题
 
@@ -41,6 +43,7 @@ HAVING SUM(action = 'answer') = (SELECT SUM(action = 'answer') s
                                  
 # 依然是找最值的问题, 不唯一写了分组函数, 注意HAVING过滤分组
 
+
 579. 查询员工的累计薪水 Hard
 
 SELECT E1.Id id, E1.Month month, SUM(E2.Salary) Salary
@@ -52,6 +55,7 @@ ORDER BY E1.Id, E1.Month DESC
 
 # 描述不清, 要得出每个月以及包括这月在内近三个月的累计工资, 先构造满足条件的表, 然后去掉当前月(最大月)就可以了
 
+
 580. 统计各专业学生人数 Medium
 
 SELECT dept_name, COUNT(student_id) student_number
@@ -62,6 +66,7 @@ ORDER BY student_number DESC, dept_name
 
 # 简单的联结和分组
 
+
 584. 寻找用户推荐人 Easy
 
 SELECT name
@@ -69,6 +74,7 @@ FROM customer
 WHERE referee_id != 2 OR referee_id IS NULL
 
 # 简单看一下NULL
+
 
 585. 2016年的投资 Medium
 
@@ -83,6 +89,14 @@ WHERE (LAT, LON) NOT IN (SELECT LAT,LON
 
 # 根据所给条件写两个子查询即可
 
+select round(sum(tiv_2016),2) TIV_2016
+from insurance
+where tiv_2015 in (select tiv_2015 from insurance group by tiv_2015 having count(pid) > 1)
+and (lat,lon) not in (select lat,lon from insurance group by lat,lon having count(pid) > 1)
+
+# 另一种方式表示重复/不重复
+
+
 586. 订单最多的客户 Easy
 
 SELECT customer_number
@@ -93,6 +107,7 @@ LIMIT 1
 
 # 简单
 
+
 595. 大的国家 Easy
 
 SELECT name, population, area
@@ -100,6 +115,7 @@ FROM World
 WHERE area > 3000000 OR population > 25000000
 
 # 简单
+
 
 596. 超过5名学生的课 Easy
 
@@ -111,3 +127,4 @@ HAVING COUNT(DISTINCT student) >= 5
 # Note注意一下
 
 # 574, 577, 578, 580, 584, 585, 586, 595, 596 Easy; 579 Medium
+# 579题需要注意; 
