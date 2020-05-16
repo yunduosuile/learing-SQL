@@ -4,38 +4,35 @@ SELECT FirstName, LastName, City, State
 FROM Person LEFT JOIN Address
 ON Person.PersonId = Address.PersonId
 
-# 简单的左联结
+# 左联结LEFT JOIN
+
 
 176. 第二高的薪水 Easy
+
+SELECT (SELECT DISTINCT Salary
+        FROM Employee
+        ORDER BY Salary DESC
+        LIMIT 1,1) SecondHighestSalary
+
+# LIMIT m, n 含义, 从第m行起检索n行
+# 最简单的方式去解决NULL值
 
 SELECT IFNULL((SELECT DISTINCT Salary
               FROM Employee
               ORDER BY Salary DESC
               LIMIT 1,1), NULL) SecondHighestSalary
 
-# 这里使用IFNULL函数来便于理解输出NULL
+# 使用IFNULL函数来便于理解NULL值的问题
 
 SELECT MAX(Salary) SecondHighestSalary
 FROM Employee
 WHERE Salary < (SELECT MAX(Salary)
                 FROM Employee)
          
-# 通过子查询的方式更容易理解, 这里因为是最大值使用了MAX
+# 通过子查询的方式更容易理解
+
 
 177. 第N高的薪水 Medium
-
-CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
-BEGIN
-    SET N = N-1;
-  RETURN (
-      SELECT DISTINCT Salary
-             FROM Employee
-             ORDER BY Salary DESC
-             LIMIT N,1
-  );
-END
-
-# 没有get到NULL值的问题, 通过LIMIT的方式解决了问题, 再次提醒注意LIMIT m,n的含义
 
 CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
 BEGIN
@@ -51,23 +48,39 @@ BEGIN
   );
 END
 
-# 这种写法承接176题第二种写法, 处理NULL值的思路与其相同
+# 承接176题第三种写法
+
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+    SET N = N-1;
+  RETURN (
+      SELECT DISTINCT Salary
+             FROM Employee
+             ORDER BY Salary DESC
+             LIMIT N,1
+  );
+END
+
+# 没有get到NULL值的问题, 通过LIMIT的方式解决了问题, 再次提醒注意LIMIT m,n的含义
+
 
 178. 分数排名 Medium
+
+SELECT S1.Score, COUNT(DISTINCT S2.Score) 'Rank'
+FROM Scores S1 JOIN Scores S2
+ON S1.Score <= S2.Score
+GROUP BY S1.Id
+ORDER BY S1.Score DESC
+
+# MySQL自联结解法, 注意联结条件以及COUNT()计数函数, 通过两者的结合得出Rank
+# Rank加了' ', 不知道为啥会报错 
 
 SELECT Score, Dense_RANK() OVER(ORDER BY Score DESC) AS Rank
 FROM Scores
 ORDER BY Score DESC
 
-# 这里使用窗口函数, 但是系统支持Mysql版本目前没有更新窗口函数,因此使用Oracle数据库; 注意使用Dense_rank时排名是连续的
+# 这里使用窗口函数, 但是系统支持Mysql版本目前没有更新窗口函数, 因此使用Oracle数据库; 注意使用Dense_rank时排名是连续的
 
-SELECT S1.Score, COUNT(DISTINCT S2.Score) Rank
-FROM Scores S1 JOIN Scores S2
-ON S1.Score <= S2.Score
-GROUP BY S1.Id
-ORDER BY Score DESC
-
-# MySQL自联结解法, 注意联结条件以及COUNT()计数函数, 通过两者的结合得出Rank
 
 180. 连续出现的数字 Medium
 
@@ -79,20 +92,29 @@ WHERE l1.Num = l2.Num AND l1.Num = l3.Num
 
 # 这里使用了自联结, 但是算法偏暴力, 后面有连续5次的题目不知道有没有更优解
 
+SELECT DISTINCT L1.Num ConsecutiveNums
+FROM Logs L1 JOIN Logs L2
+ON L1.Id <= L2.Id
+GROUP BY L1.Id
+HAVING SUM(L2.Num-L1.Num = 0 AND L2.Id - L1.Id <= 2) = 3
+
+# 这么写费时间, 没有方法1那么暴力
+
 SELECT DISTINCT l1.Num consecutivenums
 FROM Logs l1 JOIN Logs l2
 ON l1.Num = l2.Num AND l2.Id - l1.Id BETWEEN 0 AND 2
 GROUP BY l1.ID
 HAVING COUNT(l2.ID) > 2
 
-# 自联结的另一种方式, 这种联结方式之前不常用; 注意这里考虑连续出现的方法与前面不同 
+# 在联结时写好条件, 可以减少时间
+
 
 181. 超过经理收入的员工 Easy
 
-SELECT x.Name AS Employee
-FROM Employee x LEFT JOIN Employee y
-ON x.ManagerID = y.ID
-WHERE x.Salary > y.Salary
+SELECT E1.Name Employee
+FROM Employee E1 JOIN Employee E2
+ON E1.ManagerID = E2.ID
+WHERE E1.Salary > E2.Salary
 
 # 较简单的自联结
 
@@ -105,6 +127,7 @@ HAVING COUNT(Email) > 1
 
 # 使用分组函数轻松解决
 
+
 183. 从不订购的客户 Easy
 
 SELECT Name Customers
@@ -113,6 +136,7 @@ ON Customers.Id = Orders.CustomerId
 WHERE CustomerId IS NULL
 
 # 使用左联结然后判断NULL值解决
+
 
 184. 部门工资最高的员工 Medium
 
@@ -123,7 +147,8 @@ WHERE Salary = (SELECT Max(Salary)
                 FROM Employee E2
                 WHERE E1.DepartmentId = E2.DepartmentId)
 
-# 一个典型的子查询问题
+# 一种典型的子查询问题
+                
                 
 185. 部门工资前三高的员工 Hard
 
@@ -137,7 +162,7 @@ WHERE Salary >= COALESCE((SELECT DISTINCT Salary
                           LIMIT 2,1),0)
 ORDER BY Department, Salary DESC
 
-# 采用方法与184题相似, 使用COALESCE来处理部门不同工资数小于3为空的问题
+# 采用方法与184题相似, 使用COALESCE来处理部门不同工资数小于3为空的问题, 也可以使用简单的IFNULL来处理NULL值问题
 
 # 总结 175, 181, 182, 183 Easy; 184, 185 Medium; 176, 177, 178, 180 Hard
-
+# 180题需要注意; 记忆LIMIT n,m含义; 注意DISTINCT过滤值以及列命名的问题 
