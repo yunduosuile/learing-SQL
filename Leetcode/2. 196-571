@@ -6,6 +6,7 @@ WHERE P1.Email = P2.Email AND P1.Id > P2.Id
 
 # Delete语句暂缓, 想法是先使用SELECT查找要删除的行然后换成DELETE 
 
+
 197. 上升的温度 Easy
 
 SELECT w1.Id
@@ -21,6 +22,7 @@ ON TIMESTAMPDIFF(Day, w2.RecordDate, w1.RecordDate) = 1
 WHERE w1.Temperature > w2.Temperature
 
 # TIMESTAMPDIFF()更通用, 注意TIMESTAMPDIFF()与DATEDIFF()参数的差异
+
 
 262. 行程和用户 Hard
 
@@ -44,13 +46,15 @@ ORDER BY Day
 
 # 注意这里不存在'partner'的问题, 下面写的更简单一点
 
+
 511. 游戏玩法分析 I Easy
 
-SELECT player_id, MIN(event_date) AS first_login
+SELECT player_id, MIN(event_date) first_login
 FROM Activity
 GROUP BY player_id
 
 # 简单, 分组取最小值即可
+
 
 512. 游戏玩法分析 II Easy
 
@@ -62,6 +66,7 @@ WHERE a1.event_date = (SELECT MIN(event_date)
 
 # 使用子查询分组找到最小的日期
 
+
 534. 游戏玩法分析 III Medium
 
 SELECT A1.player_id, A1.event_date, SUM(A2.games_played) games_played_so_far
@@ -70,6 +75,7 @@ ON A1.player_id = A2.player_id AND A1.event_date >= A2.event_date
 GROUP BY A1.player_id, A1.event_date
 
 # 使用自联结的方法可以得出结果
+
 
 550. 游戏玩法分析 IV Medium
 
@@ -96,6 +102,16 @@ SELECT ROUND(
  (SELECT COUNT(DISTINCT player_id) FROM Activity), 2) fraction
  
 # 可能稍快一些, 构造一个满足条件的表
+
+SELECT ROUND(SUM(DATEDIFF(A2.event_date, A1.event_date) = 1)/COUNT(DISTINCT A1.player_id),2) fraction
+FROM Activity A1 JOIN Activity A2
+ON A1.player_id = A2.player_id
+WHERE (a1.player_id, a1.event_date) IN (SELECT player_id, MIN(event_date)
+                                       FROM Activity
+                                       GROUP BY player_id)
+                                       
+# 一次联结解决
+
 
 569. 员工薪水中位数 Hard
 
@@ -125,6 +141,15 @@ WHERE t1.num >= 5
 
 # 先构造满足条件的表然后联结得出结果
 
+SELECT Name
+FROM Employee
+WHERE ID IN (SELECT ManagerId
+             FROM Employee
+             GROUP BY ManagerId
+             HAVING COUNT(DISTINCT ID) >= 5)
+             
+# 子查询也轻松加愉快
+
 571. 给定数字的频率查询中位数 Hard
 
 SELECT AVG(Numbers.Number) median
@@ -150,3 +175,4 @@ AND SUM(N2.Frequency) - avg(N1.Frequency) <= (SELECT SUM(Frequency) FROM Numbers
 # 使用分组函数后没法直接对Number进行运算, 因而使用了子查询
 
 # 总结 197, 262, 511, 512, 534, 550, 570 Easy; 196 Medium; 569, 571 Hard
+# 196, 262, 550, 569, 571题需要注意; 注意中位数的构造条件; DATADIFF(), TIMESTAMPDIFF()时间函数的使用
