@@ -18,7 +18,25 @@ ON t1.pay_month = t2.pay_month
 
 618. 学生地理信息报告 Hard
 
-# 卡壳
+select America, Asia, Europe
+from
+(select name America, row_number() over(order by name) id
+from student
+where continent = 'America') s1
+left join
+(select name Asia, row_number() over(order by name) id
+from student
+where continent = 'Asia') s2
+on s1.id = s2.id
+left join
+(select name Europe, row_number() over(order by name) id
+from student
+where continent = 'Europe') s3
+on s1.id = s3.id
+
+# 卡壳 
+# 可以使用窗口函数了 这里使用了窗口函数进行排序
+
 
 619. 只出现一次的最大数字 Easy
 
@@ -106,3 +124,4 @@ GROUP BY product_id
 
 # 第二次的思路与第一次惊人的一致
 # 619, 620, 1045, 1050, 1068, 1069 Easy; 615, 626 Medium; 618, 627 Hard 
+# 618, 627题注意; 618的窗口函数以及透视表
