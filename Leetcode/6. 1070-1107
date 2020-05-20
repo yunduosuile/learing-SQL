@@ -50,7 +50,9 @@ WHERE experience_years = (SELECT MAX(experience_years)
                           FROM Project P2 JOIN Employee
                           ON P2.employee_id = Employee.employee_id
                           WHERE P1.project_id = P2.project_id)
-                          
+                        
+# 不难
+
 1082. 销售分析 I Easy
 
 SELECT seller_id
@@ -60,6 +62,8 @@ HAVING SUM(price) >= ALL(SELECT SUM(price)
                          FROM Sales
                          GROUP BY seller_id)
                          
+# 较容易
+
 1083. 销售分析 II Easy
 
 SELECT DISTINCT buyer_id 
@@ -72,7 +76,17 @@ AND buyer_id NOT IN (SELECT buyer_id
                      FROM Sales JOIN Product
                      ON Sales.product_id = Product.product_id
                      WHERE product_name = 'iPhone')
-                     
+ 
+# 有点复杂
+
+select buyer_id
+from sales join product
+on sales.product_id = product.product_id
+group by buyer_id
+having sum(product_name = 'S8') >= 1 and sum(product_name = 'iPhone') = 0
+
+# 用聚合函数也可以
+
 1084. 销售分析 III Easy
 
 SELECT Product.product_id, product_name
@@ -124,6 +138,16 @@ ORDER BY install_dt
 
 # 感觉就很长
 
+select a1.event_date install_dt, count(distinct a1.player_id) installs, 
+round(ifnull(sum(a1.player_id = a2.player_id)/count(distinct a1.player_id),0),2) Day1_retention
+from activity a1 left join activity a2
+on a1.event_date = a2.event_date-1
+where (a1.player_id, a1.event_date) in (select player_id, min(event_date) from activity group by player_id)
+group by a1.event_date
+order by a1.event_date
+
+# 简单很多
+
 1098. 小众书籍 Medium
 
 SELECT book_id, name
@@ -137,6 +161,15 @@ HAVING SUM(quantity) >= 10)
 AND available_from < '2019-05-23'
 
 # 不知道为啥会卡住
+
+select books.book_id, name
+from books left join orders
+on books.book_id = orders.book_id and dispatch_date > '2018-06-23'
+where available_from < '2019-05-23'
+group by books.book_id
+having sum(ifnull(quantity,0)) < 10
+
+# 正面来
 
 1107. 每日新用户统计 Medium
 
@@ -166,4 +199,13 @@ ORDER BY activity_date
 
 # 如上 不需要写联结
 
+select activity_date login_date, count(distinct user_id) user_count
+from traffic
+where (user_id, activity_date) in (select user_id, min(activity_date) from traffic where activity = 'login' group by user_id) 
+and datediff('2019-06-30',activity_date) <= 90
+group by activity_date
+
+# 用子查询求最小值
+
 # 1070, 1075, 1076, 1077, 1082, 1083, 1084 Easy; 1098 Medium; 1097, 1107 Hard 
+# 这次做没有卡
