@@ -10,6 +10,7 @@ ORDER BY student_id
 
 # 感觉有哪里不对劲
 
+
 1113. 报告的记录 Easy
 
 SELECT extra report_reason, COUNT(DISTINCT post_id) report_count
@@ -19,17 +20,19 @@ GROUP BY extra
 
 # 读懂题有点难
 
+
 1126. 查询活跃业务 Medium
 
 SELECT business_id
 FROM Events JOIN (SELECT event_type, AVG(occurences) avg_occurences
                  FROM Events
-                 GROUP BY event_type) s
-ON Events.event_type = s.event_type
+                 GROUP BY event_type) t
+ON Events.event_type = t.event_type
 GROUP BY business_id
 HAVING SUM(occurences > avg_occurences) >= 2
 
 # 思路简单  
+
 
 1127. 用户购买平台 Hard
 
@@ -50,6 +53,7 @@ GROUP BY t1.spend_date, t1.platform
 ORDER BY t1.platform = 'both', t1.platform, t1.spend_date
 
 # 学习构造新表t1的方法, 另本题通过构造两个表得出结果
+
 
 1132. 报告的记录 II Medium
 
@@ -74,6 +78,7 @@ GROUP BY action_date) s1
 
 # 这样可以先去重
 
+
 1141. 查询近30天活跃用户数 Easy
 
 SELECT activity_date day, COUNT(DISTINCT user_id) active_users
@@ -82,6 +87,7 @@ WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'
 GROUP BY activity_date
 
 # 总算简单不卡了
+
 
 1142. 过去30天的用户活动 II Easy
 
@@ -94,6 +100,7 @@ GROUP BY user_id) t
 
 # 想的太难了
 
+
 1148. 文章浏览 I Easy
 
 SELECT DISTINCT author_id id
@@ -102,6 +109,7 @@ WHERE author_id = viewer_id
 ORDER BY author_id
 
 # 简单真好
+
 
 1149. 文章浏览 II Medium
 
@@ -112,6 +120,7 @@ HAVING COUNT(DISTINCT article_id) >= 2
 ORDER BY id
 
 # 也还行
+
 
 1158. 市场分析 I Medium
 
@@ -124,3 +133,4 @@ GROUP BY user_id
 
 
 # 1113, 1126, 1141, 1148, 1149 Easy; 1112, 1132, 1142, 1158 Medium; 1127 Hard
+# 这次做没卡, 注意1127构造表的做法
