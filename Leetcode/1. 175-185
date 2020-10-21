@@ -14,7 +14,7 @@ SELECT (SELECT DISTINCT Salary
         ORDER BY Salary DESC
         LIMIT 1,1) SecondHighestSalary
 
-# LIMIT m, n 含义, 从第m行起检索n行
+# LIMIT m, n 含义, 从第m行起检索n行 order by 默认升序
 # 最简单的方式去解决NULL值
 
 SELECT IFNULL((SELECT DISTINCT Salary
